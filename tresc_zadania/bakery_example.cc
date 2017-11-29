@@ -1,8 +1,8 @@
 #include <iostream>
 #include <iomanip>
-#include "bakery.h"
-#include "pie.h"
-#include "cake.h"
+#include "../bakery.h"
+#include "../pie.h"
+#include "../cake.h"
 
 int main() {
     //==== Bakery ====
