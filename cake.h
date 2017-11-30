@@ -65,9 +65,9 @@ class Cake {
 };
 
 template<class T, T _length, T _width>
-using CheeseCake = Cake<T, T _length, T _width, double, false>;
+using CheeseCake = Cake<T, _length, _width, double, false>;
 
 template<class T, T _length, T _width, class P>
-using CreamCake = Cake<T, T _length, T _width, P, true>;
+using CreamCake = Cake<T, _length, _width, P, true>;
 
 #endif //JNP1_ZAD4_CAKE_H

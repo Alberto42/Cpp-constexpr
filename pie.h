@@ -14,7 +14,7 @@ class Pie {
         if (steps == PI_COMPUTATION_STEPS) {
             return 3 + acc;
         } else {
-            double sign = 1, denominator;
+            double sign = 1;
             if (steps % 2 == 1) {
                 sign = -1;
             }
@@ -24,8 +24,8 @@ class Pie {
         }
     }
     static constexpr double PI_VALUE = compute_pi(0, 0); // 8 digits
-    P _price;
     int _stock;
+    P _price;
     
     public:
     
