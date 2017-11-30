@@ -31,7 +31,7 @@ class Pie {
     
     typedef std::conditional<forSale, std::true_type, std::false_type> Sellable;
     typedef std::conditional<forSale, P, std::false_type> PriceType;
-    typedef T SizeType;
+    typedef R SizeType;
     typedef std::conditional<forSale, std::true_type, std::false_type> IsApplePie;
     
     template<class U = P, class = class std::enable_if<!forSale && std::is_same<U,P>::value, U>::type>
