@@ -24,8 +24,8 @@ class Cake {
     
     public:
     
-    typedef typename std::conditional<forSale, std::true_type, std::false_type>::type Sellable;
-    typedef typename std::conditional<forSale, P, std::false_type>::type PriceType;
+    typedef std::conditional<forSale, std::true_type, std::false_type> Sellable;
+    typedef std::conditional<forSale, P, std::false_type> PriceType;
     typedef T SizeType;
     typedef std::false_type IsApplePie;
     
@@ -45,12 +45,12 @@ class Cake {
                       "Wrong cake price type in CreamCake."); 
     }
     
-    static double getArea()
+    static constexpr double getArea()
     {
         return _length * _width * LN2_VALUE;
     }
     
-    int getStock()
+    int getStock() const
     {
         return _stock;
     }
@@ -63,7 +63,7 @@ class Cake {
     }
     
     template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
-    P getPrice()
+    P getPrice() const
     {
         return _price;
     }
