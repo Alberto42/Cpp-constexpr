@@ -24,8 +24,8 @@ class Cake {
     
     public:
     
-    typedef std::conditional<forsale, std::true_type, std::false_type> Sellable;
-    typedef std::conditional<forsale, P, std::false_type> PriceType;
+    typedef std::conditional<forSale, std::true_type, std::false_type> Sellable;
+    typedef std::conditional<forSale, P, std::false_type> PriceType;
     typedef T SizeType;
     typedef std::false_type IsApplePie;
     
