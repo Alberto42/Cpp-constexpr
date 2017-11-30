@@ -72,6 +72,11 @@ class Pie {
     {
         return _price;
     }
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
+    void restock(int additionalStock){
+        _stock += additionalStock;
+    }
 };
 
 template<class R, R _radius>
