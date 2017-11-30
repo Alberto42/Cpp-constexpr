@@ -3,11 +3,11 @@
 
 #include <type_traits>
 
-template <class T, T _length, T _width>
+template<class T, T _length, T _width, class P, bool forSale>
 class Cake {
-    static_assert(std::is_integral<T>::value, "Wrong cake size type in Cake.");
-
+     
     private:
+    
     static const int LN2_COMPUTATION_STEPS = 500;
     static constexpr double compute_ln2(int steps, double acc, double power_of_2)
     {
@@ -19,57 +19,55 @@ class Cake {
         }
     }
     static constexpr double LN2_VALUE = compute_ln2(1, 0, 2); // 15 digits
-
-    protected:
     int _stock;
-    Cake(int stock): _stock(stock) {}; // Czy powinienem sprawdzać argument? - dopytać się prowadzącego
-
+    P _price;
+    
     public:
-    static constexpr double getArea()
+    
+    template<class U = P, class = class std::enable_if<!forSale && std::is_same<U,P>::value, U>::type>
+    Cake(int stock): _stock(stock)
+    {
+        static_assert(std::is_integral<T>::value,
+                      "Wrong cake size type in Cake.");
+    }
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
+    Cake(int stock, P price): _stock(stock), _price(price)
+    {
+        static_assert(std::is_integral<T>::value,
+                      "Wrong cake size type in Cake.");
+        static_assert(std::is_floating_point<P>::value,
+                      "Wrong cake price type in CreamCake."); 
+    }
+    
+    static double getArea()
     {
         return _length * _width * LN2_VALUE;
     }
-    int getStock() const
+    
+    int getStock()
     {
         return _stock;
     }
-};
-
-template <class T, T _length, T _width>
-class CheeseCake: public Cake<T, _length, _width> {
-    public:
-    CheeseCake(int stock): Cake<T, _length, _width>(stock) {};
-    typedef std::false_type Sellable;
-    typedef std::false_type PriceType;
-    typedef T SizeType;
-    typedef std::false_type IsApplePie;
-};
-
-template <class T, T _length, T _width, class P>
-class CreamCake: public Cake<T, _length, _width> {
-    static_assert(std::is_floating_point<P>::value,
-                  "Wrong cake price type in CreamCake.");
-
-    private:
-    P _price;
-
-    public:
-
-    typedef P PriceType;
-    typedef T SizeType;
-    typedef std::true_type Sellable;
-    typedef std::false_type IsApplePie;
-    CreamCake(int stock, P price): Cake<T, _length, _width>(stock),
-                                   _price(price) {};
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
     void sell()
     {
-        if (Cake<T, _length, _width>::_stock > 0) // Czy funkcja powinna być "cicha" dla 0?
-            --Cake<T, _length, _width>::_stock;
+        if (_stock > 0)
+            --_stock;
     }
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
     P getPrice()
     {
         return _price;
     }
 };
+
+template<class T, T _length, T _width>
+using CheeseCake = Cake<T, T _length, T _width, double, false>;
+
+template<class T, T _length, T _width, class P>
+using CreamCake = Cake<T, T _length, T _width, P, true>;
 
 #endif //JNP1_ZAD4_CAKE_H

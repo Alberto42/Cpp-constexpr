@@ -3,18 +3,18 @@
 
 #include <type_traits>
 
-template <class R, R _radius>
+template<class R, R _radius, class P, bool forSale>
 class Pie {
-    static_assert(std::is_integral<R>::value, "Wrong cake size type in Pie.");
 
     private:
-    static constexpr int PI_COMPUTATION_STEPS = 500;
+    
+    static const int PI_COMPUTATION_STEPS = 500;
     static constexpr double compute_pi(int steps, double acc)
     {
         if (steps == PI_COMPUTATION_STEPS) {
             return 3 + acc;
         } else {
-            double sign = 1;
+            double sign = 1, denominator;
             if (steps % 2 == 1) {
                 sign = -1;
             }
@@ -24,60 +24,55 @@ class Pie {
         }
     }
     static constexpr double PI_VALUE = compute_pi(0, 0); // 8 digits
-
-    protected:
+    P _price;
     int _stock;
-    Pie (int stock): _stock(stock) {}; // Czy powinienem sprawdzać argument? - dopytać się prowadzącego
-
+    
     public:
-
-    static constexpr double getArea()
+    
+    template<class U = P, class = class std::enable_if<!forSale && std::is_same<U,P>::value, U>::type>
+    Pie(int stock): _stock(stock)
+    {
+        static_assert(std::is_integral<R>::value,
+                      "Wrong cake size type in Pie.");
+    };
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
+    Pie(int stock, P price): _stock(stock), _price(price)
+    {
+        static_assert(std::is_integral<R>::value,
+                      "Wrong cake size type in Pie.");
+        static_assert(std::is_floating_point<P>::value,
+                      "Wrong cake price type in ApplePie.");
+    };
+    
+    static double getArea()
     {
         return _radius * _radius * PI_VALUE;
     }
-    int getStock() const
+    
+    int getStock()
     {
         return _stock;
     }
-};
-
-template <class R, R _radius>
-class CherryPie: public Pie<R, _radius> {
-    public:
-    CherryPie(int stock): Pie<R, _radius>(stock) {};
-    typedef std::false_type Sellable;
-    typedef std::false_type PriceType;
-    typedef R SizeType;
-    typedef std::false_type IsApplePie;
-};
-
-template <class R, R _radius, class P>
-class ApplePie: public Pie<R, _radius> {
-    static_assert(std::is_floating_point<P>::value,
-                  "Wrong cake price type in ApplePie.");
-
-    private:
-    P _price;
-    public:
-    typedef P PriceType;
-    typedef std::true_type Sellable;
-    typedef R SizeType;
-    typedef std::true_type IsApplePie;
-
-    ApplePie(int stock, P price): Pie<R, _radius>(stock), _price(price) {};
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
     void sell()
     {
-        if (Pie<R, _radius>::_stock > 0) // Czy funkcja powinna być "cicha" dla 0?
-            --Pie<R, _radius>::_stock;
+        if (_stock > 0)
+            --_stock;
     }
+    
+    template<class U = P, class = class std::enable_if<forSale && std::is_same<U,P>::value, U>::type>
     P getPrice()
     {
         return _price;
     }
-
-    void restock(int additionalStock){
-        Pie<R, _radius>::_stock += additionalStock;
-    }
 };
+
+template<class R, R _radius>
+using CherryPie = Pie<R, _radius, double, false>;
+
+template<class R, R _radius, class P>
+using ApplePie = Pie<R, _radius, P, true>;
 
 #endif //JNP1_ZAD4_PIE_H
