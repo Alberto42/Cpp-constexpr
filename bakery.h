@@ -60,7 +60,7 @@ public:
 
     template<class Product>
     void sell() {
-        static_assert(Product::Sellable::type::value, "Attempt to sell not-sellable product");
+        static_assert(Product::Sellable::value, "Attempt to sell not-sellable product");
         static_assert(contains<Product, P ...>::value,"Attempt to sell non-stocked product");
 
         Product& product = std::get<Product>(products);
@@ -80,7 +80,7 @@ public:
 
     template <class Product>
     void restock(int additionalStock){
-        static_assert(Product::IsApplePie::type::value, "It is only possible to restock apple pies");
+        static_assert(Product::IsApplePie::value, "It is only possible to restock apple pies");
         static_assert(contains<Product, P ...>::value, "Product is not stocked");
         Product& product = std::get<Product>(products);
         product.restock(additionalStock);
