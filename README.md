@@ -1,4 +1,4 @@
-# jnp1-4
+# Cpp-constexpr
 
 Repository contains a program that manages bakery. It was written for advanced C++ classes. It is interesting that, it uses 
 C++17 compile-time features.
